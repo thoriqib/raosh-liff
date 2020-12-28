@@ -1,9 +1,10 @@
+let nama = "";
+let daftar = "";
 window.onload = function() {
     const defaultLiffId = "1655453347-xyprGnKm";   // change the default LIFF value if you are not using a node server
     
     // DO NOT CHANGE THIS
     let myLiffId = "";
-    let daftar = '';
 
     myLiffId = defaultLiffId;
     initializeLiff(myLiffId);
@@ -67,7 +68,7 @@ function addProfile(){
     const lineProfile = document.getElementById('profile');
     liff.getProfile()
     .then(profile => {
-      const nama = profile.displayName;
+      nama = profile.displayName;
       const picture = profile.pictureUrl;
       lineProfile.innerHTML = `<img src="${picture}" alt="Foto Profil Line" class="w-50 rounded-circle d-block mx-auto my-2">
                                <p class="text-center">Selamat Datang <b>${nama}</b>, yuk pesan menunya sekarang!</>`;
@@ -78,11 +79,9 @@ function addProfile(){
 };
 
 function getPesanan(){
-    let daftar = '';
     for (let i = 0; i < arrayPesanan.length; i++) {
-        daftar = daftar + `${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
+        daftar = daftar + `${i+1}) ${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
     };
-    return daftar;
 };
 
 function registerButtonHandlers() {
@@ -112,19 +111,14 @@ function registerButtonHandlers() {
 
     document.getElementById('sendMessageButton').addEventListener('click', function() {
         let totalHarga = hitungTotal();
-        daftar = getPesanan();
+        getPesanan();
         if (!liff.isInClient()) {
-            alert(`Pesanan Kamu :\n${daftar}\nTotal Rp. ${totalHarga}\nSilakan pesan melalui aplikasi LINE`);
+            alert(`
+                  Hai ${nama} !\nPesanan Kamu :\n${daftar}\nTotal Rp. ${totalHarga}\nSilakan pesan melalui aplikasi LINE`);
         } else {
             liff.sendMessages([{
                 'type': 'text',
-                'text': `Halo ${nama} ! 
-                        \n \n
-                        Pesanan Anda : 
-                        \n
-                        *${daftar}* \n
-                        Total : ${totalHarga} \n
-                        Terima kasih sudah memesan. Pesanan akan disiapkan segera`
+                'text': `Halo ${nama} !\n\nPesanan Anda :\n${daftar}\nTotal : Rp. ${totalHarga}\nTerima kasih sudah memesan. Pesanan akan segera disiapkan`
             }]).then(function() {
                 liff.closeWindow();
             }).catch(function(error) {
