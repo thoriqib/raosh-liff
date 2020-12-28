@@ -39,6 +39,7 @@ function initializeApp() {
     } else if(liff.isLoggedIn()){
         addProfile();
         document.getElementById('openWindowButton').setAttribute('hidden', '');
+        document.getElementById('liffLogoutButton').setAttribute('hidden', '');
         document.getElementById('closeAppButton').setAttribute('hidden', '');
     } else {
     //kondisi ketika aplikasi dibuka di external browser dan status belum login 
