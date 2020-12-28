@@ -30,6 +30,7 @@ function initializeLiff(myLiffId) {
  * Initialize the app by calling functions handling individual app components
  */
 function initializeApp() {
+    registerButtonHandlers();
     //cek apakah aplikasi dibuka di browser line
     if(liff.isInClient()){
         addProfile();
@@ -38,14 +39,10 @@ function initializeApp() {
     } else if(liff.isLoggedIn()){
         addProfile();
         document.getElementById('openWindowButton').setAttribute('hidden', '');
+        document.getElementById('closeAppButton').setAttribute('hidden', '');
     } else {
         lineProfile.innerHTML = '';
-        document.getElementById('loginPage').innerHTML = /*html*/
-        `<nav class="navbar navbar-expand-lg navbar-dark bg-success">
-            <div></div>
-            <a class="navbar-brand m-auto" href="#">Raosh !</a>
-            <div></div>
-        </nav>
+        document.getElementById('loginPage').innerHTML = /*html*/`
         <div class="jumbotron jumbotron-fluid">
             <div class="container text-center p-2">
                 <h1 class="display-4">Raosh ! Drink&Meal</h1>
@@ -56,7 +53,8 @@ function initializeApp() {
         document.getElementById('openWindowButton').setAttribute('hidden', '');
         document.getElementById('sendMessageButton').addEventListener('click', alert('Kamu belum login'));
     }
-    registerButtonHandlers();
+    console.log("Client : " + liff.isInClient());
+    console.log("Login : " + liff.isLoggedIn());
 }
 
 function addProfile(){
@@ -71,7 +69,13 @@ function addProfile(){
     .catch((err) => {
       console.log('error', err);
     });
-    
+}
+
+function getPesanan(){
+    let daftar = "";
+    for (let i = 0; i < arrayPesanan.length; i++) {
+        daftar = daftar + `${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
+    };
 }
 
 function registerButtonHandlers() {
@@ -89,6 +93,10 @@ function registerButtonHandlers() {
         };
     });
 
+    document.getElementById('closeAppButton').addEventListener('click', function() {
+        liff.closeWindow();
+    });
+
     document.getElementById('liffLogoutButton').addEventListener('click', function() {
         if (liff.isLoggedIn()) {
             liff.logout();
@@ -101,10 +109,7 @@ function registerButtonHandlers() {
         if (!liff.isInClient()) {
             alert('Silakan buka aplikasi dari line');
         } else {
-            let daftar = "";
-            for (let i = 0; i < arrayPesanan.length; i++) {
-                daftar = daftar + `${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
-            }
+            getPesanan();
             let totalHarga = hitungTotal();
             liff.sendMessages([{
                 'type': 'text',
@@ -123,3 +128,5 @@ function registerButtonHandlers() {
         }
     });
 }
+
+
