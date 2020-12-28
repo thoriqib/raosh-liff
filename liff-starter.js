@@ -24,14 +24,14 @@ function initializeLiff(myLiffId) {
         .catch((err) => {
             console.log(err);
         });
-}
+};
  
 /**
  * Initialize the app by calling functions handling individual app components
  */
 function initializeApp() {
-    registerButtonHandlers();
     //cek apakah aplikasi dibuka di browser line
+    const lineProfile = document.getElementById('profile');
     if(liff.isInClient()){
         addProfile();
         document.getElementById('liffLogoutButton').setAttribute('hidden', '');
@@ -41,7 +41,9 @@ function initializeApp() {
         document.getElementById('openWindowButton').setAttribute('hidden', '');
         document.getElementById('closeAppButton').setAttribute('hidden', '');
     } else {
+    //kondisi ketika aplikasi dibuka di external browser dan status belum login 
         lineProfile.innerHTML = '';
+        //Menambahkan loginPage di awal halaman jika belum login
         document.getElementById('loginPage').innerHTML = /*html*/`
         <div class="jumbotron jumbotron-fluid">
             <div class="container text-center p-2">
@@ -52,31 +54,33 @@ function initializeApp() {
         </div>`;
         document.getElementById('openWindowButton').setAttribute('hidden', '');
         document.getElementById('sendMessageButton').addEventListener('click', alert('Kamu belum login'));
-    }
+    };
+    registerButtonHandlers();
     console.log("Client : " + liff.isInClient());
     console.log("Login : " + liff.isLoggedIn());
-}
+};
 
 function addProfile(){
+    //mendapatkan profil pengguna
+    const lineProfile = document.getElementById('profile');
     liff.getProfile()
     .then(profile => {
       const nama = profile.displayName;
       const picture = profile.pictureUrl;
-      const lineProfile = document.getElementById('profile');
       lineProfile.innerHTML = `<img src="${picture}" alt="Foto Profil Line" class="w-50">
                                <p>Selamat Datang <b>${nama}</b>, yuk pesan menunya sekarang!</>`;
       })
     .catch((err) => {
       console.log('error', err);
     });
-}
+};
 
 function getPesanan(){
     let daftar = "";
     for (let i = 0; i < arrayPesanan.length; i++) {
         daftar = daftar + `${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
     };
-}
+};
 
 function registerButtonHandlers() {
     document.getElementById('openWindowButton').addEventListener('click', function() {
@@ -86,12 +90,11 @@ function registerButtonHandlers() {
         });
     });
 
-    document.getElementById('liffLoginButton').addEventListener('click', function() {
-        if (!liff.isLoggedIn()) {
+    if (!liff.isLoggedIn()) {
+        document.getElementById('liffLoginButton').addEventListener('click', function() {
             liff.login();
-            window.location.reload();
-        };
-    });
+        });
+    };
 
     document.getElementById('closeAppButton').addEventListener('click', function() {
         liff.closeWindow();
@@ -100,7 +103,6 @@ function registerButtonHandlers() {
     document.getElementById('liffLogoutButton').addEventListener('click', function() {
         if (liff.isLoggedIn()) {
             liff.logout();
-            window.location.reload();
             liff.closeWindow();
         };
     });
@@ -127,6 +129,6 @@ function registerButtonHandlers() {
             });
         }
     });
-}
+};
 
 
