@@ -78,6 +78,7 @@ function addProfile(){
 };
 
 function getPesanan(){
+    let daftar = '';
     for (let i = 0; i < arrayPesanan.length; i++) {
         daftar = daftar + `${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
     };
