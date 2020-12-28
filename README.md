@@ -1,2 +1,2 @@
 # raosh-liff
-Aplikasi untuk submission kelas LIFF Dicoding
+Aplikasi pemesanan makanan dan minuman sederhana untuk submission kelas LIFF Dicoding
