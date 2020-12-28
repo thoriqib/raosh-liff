@@ -1,8 +1,9 @@
 window.onload = function() {
     const defaultLiffId = "1655453347-xyprGnKm";   // change the default LIFF value if you are not using a node server
- 
+    
     // DO NOT CHANGE THIS
     let myLiffId = "";
+    let daftar = '';
 
     myLiffId = defaultLiffId;
     initializeLiff(myLiffId);
@@ -39,11 +40,10 @@ function initializeApp() {
     } else if(liff.isLoggedIn()){
         addProfile();
         document.getElementById('openWindowButton').setAttribute('hidden', '');
-        document.getElementById('liffLogoutButton').setAttribute('hidden', '');
-        document.getElementById('closeAppButton').setAttribute('hidden', '');
+        document.getElementById('liffLogoutButton').removeAttribute('hidden');
     } else {
-    //kondisi ketika aplikasi dibuka di external browser dan status belum login 
-        lineProfile.innerHTML = '';
+    //kondisi ketika aplikasi dibuka di external browser dan status belum login
+        document.getElementById('app').innerHTML = '';
         //Menambahkan loginPage di awal halaman jika belum login
         document.getElementById('loginPage').innerHTML = /*html*/`
         <div class="jumbotron jumbotron-fluid">
@@ -54,7 +54,8 @@ function initializeApp() {
             </div>
         </div>`;
         document.getElementById('openWindowButton').setAttribute('hidden', '');
-        document.getElementById('sendMessageButton').addEventListener('click', alert('Kamu belum login'));
+        document.getElementById('liffLogoutButton').setAttribute('hidden', '');
+        document.getElementById('sendMessageButton').setAttribute('hidden', '');
     };
     registerButtonHandlers();
     console.log("Client : " + liff.isInClient());
@@ -68,8 +69,8 @@ function addProfile(){
     .then(profile => {
       const nama = profile.displayName;
       const picture = profile.pictureUrl;
-      lineProfile.innerHTML = `<img src="${picture}" alt="Foto Profil Line" class="w-50">
-                               <p>Selamat Datang <b>${nama}</b>, yuk pesan menunya sekarang!</>`;
+      lineProfile.innerHTML = `<img src="${picture}" alt="Foto Profil Line" class="w-50 rounded-circle d-block mx-auto my-2">
+                               <p class="text-center">Selamat Datang <b>${nama}</b>, yuk pesan menunya sekarang!</>`;
       })
     .catch((err) => {
       console.log('error', err);
@@ -77,10 +78,10 @@ function addProfile(){
 };
 
 function getPesanan(){
-    let daftar = "";
     for (let i = 0; i < arrayPesanan.length; i++) {
         daftar = daftar + `${arrayPesanan[i].jumlah} ${arrayPesanan[i].nama} \n`;
     };
+    return daftar;
 };
 
 function registerButtonHandlers() {
@@ -104,16 +105,16 @@ function registerButtonHandlers() {
     document.getElementById('liffLogoutButton').addEventListener('click', function() {
         if (liff.isLoggedIn()) {
             liff.logout();
-            liff.closeWindow();
+            window.location.reload();
         };
     });
 
     document.getElementById('sendMessageButton').addEventListener('click', function() {
+        let totalHarga = hitungTotal();
+        daftar = getPesanan();
         if (!liff.isInClient()) {
-            alert('Silakan buka aplikasi dari line');
+            alert(`Pesanan Kamu :\n${daftar}\nTotal Rp. ${totalHarga}\nSilakan pesan melalui aplikasi LINE`);
         } else {
-            getPesanan();
-            let totalHarga = hitungTotal();
             liff.sendMessages([{
                 'type': 'text',
                 'text': `Halo ${nama} ! 
